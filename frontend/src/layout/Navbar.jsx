@@ -1,7 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useUser } from '../UserContext'
 
 function Navbar() {
+  const {user, logout} = useUser();
+  console.log(user)
+
   return (
     <div className="drawer">
     <input id="my-drawer-3" type="checkbox" className="drawer-toggle" /> 
@@ -17,19 +21,38 @@ function Navbar() {
           <Link to={"/"} className="text-xl text-white">Auctionia</Link>
         </div>
         <div className="flex-none hidden lg:block">
-          <ul className="menu menu-horizontal">
+         {(!user) && <ul className="menu menu-horizontal">
             <li><Link to={"/login"}>Login</Link></li>
             <li><Link to={"/register"}>Sign Up</Link></li>
           </ul>
+          ||
+
+          <ul className="menu menu-horizontal items-center ">
+            <div className="flex gap-1 items-center justify-around hover:bg-[#ffffff4a] bg-[#ffffff2a] rounded-full p-1" >
+              <img src={`http://localhost:5500/upload/${user.file}`} className='h-8 w-8 rounded-full object-cover' alt="" />
+              <li><Link to={"/profile"}>{user.name}</Link></li>
+            </div>
+            <li><Link to={"/"} onClick={logout}>Logout</Link></li>
+          </ul>
+          }
         </div>
       </div>
     </div> 
     <div className="drawer-side z-50">
       <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay"></label> 
-      <ul className="menu p-4 w-80 min-h-full bg-base-200">
+     {(!user) && <ul className="menu p-4 w-80 min-h-full bg-base-200">
         <li><Link to={"/login"}>Login</Link></li>
         <li><Link to={"/register"}>Sign Up</Link></li>
-      </ul>
+      </ul> 
+        ||
+        <ul className="menu p-4 w-80 min-h-full bg-base-200">
+          <div className="flex gap-1 items-center justify-around hover:bg-[#ffffff4a] bg-[#ffffff2a] rounded-full p-1" >
+          <img src={`http://localhost:5500/upload/${user.file}`} className='h-8 w-8 rounded-full object-cover' alt="" />
+            <li><Link to={"/profile"}>{user.name}</Link></li>
+          </div>
+          <li><Link to={"/"} onClick={logout}>Logout</Link></li>
+      </ul> 
+      }
     </div>
   </div>
   )
