@@ -2,8 +2,13 @@ import React from 'react'
 import Timeline from '../layout/Timeline'
 import IndexStats from '../layout/IndexStats'
 import Footer from '../layout/Footer'
+import { useUser } from '../UserContext'
+import { Router, useNavigate } from 'react-router-dom'
 
 function Home() {
+  const router = useNavigate()
+
+  const {user} = useUser()
   return (
    <div className="flex flex-col">
      <div className="hero min-h-screen" style={{backgroundImage: 'url(https://wallpaperaccess.com/full/1209666.jpg)',
@@ -20,7 +25,14 @@ function Home() {
         <p className="mb-5">
             Sell your Arts and Crafts. Just upload your product and start for bidding. And also you can bid on other products.
         </p>
-        <button className="btn btn-primary">Login To Start</button>
+     {(!user) &&   <button className="btn btn-primary" onClick={()=>{
+        router('/login')
+     }}>Login To Start</button> 
+      ||
+      <button className="btn btn-primary" onClick={()=>{
+        router('/bids')
+     }}>Start Bidding</button>
+     }
       </div>
     </div>
 

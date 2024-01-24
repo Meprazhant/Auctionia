@@ -1,7 +1,55 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { useUser } from '../UserContext';
+
 
 function Login() {
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const {user, login} = useUser();
+
+  useEffect(() => {
+    if(user) {
+      window.location.href = "/";
+    }
+  }, [user])
+
+  function handleChange(name, value) {
+    setData({ ...data, [name]: value });
+  }
+
+  function validateUser(){
+    if (
+      !!data.email &&
+      !!data.password
+    ) {
+      fetch("http://localhost:5500/api/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          if(res.status === 201) {
+            localStorage.setItem("token", res.token);
+            localStorage.setItem("user", JSON.stringify(res.user));
+            login(res.user);
+          } else {
+            alert(res.message);
+          }
+        });
+    } else {
+      alert("Please fill all the fields");
+    }
+  }
+
   return (
     <div className="hero min-h-screen bg-base-200 w-full">
     <div className="hero-content flex-col  sm:w-8/12 w-full">
@@ -12,26 +60,30 @@ function Login() {
         </p>
       </div>
       <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-        <form className="card-body">
+        <div className="card-body">
           <div className="form-control">
             <label className="label">
               <span className="label-text">Email</span>
             </label>
-            <input type="email" placeholder="email" className="input input-bordered" required />
+            <input type="email" name='email' onChange={(e)=>{
+              handleChange('email', e.target.value)
+            }} placeholder="email" className="input input-bordered" required />
           </div>
           <div className="form-control">
             <label className="label">
               <span className="label-text">Password</span>
             </label>
-            <input type="password" placeholder="password" className="input input-bordered" required />
+            <input type="password" name='password' onChange={(e)=>{
+              handleChange('password', e.target.value)
+            }} placeholder="password" className="input input-bordered" required />
             <label className="label">
               <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
             </label>
           </div>
           <div className="form-control mt-6">
-            <button className="btn btn-primary">Login</button>
+            <button className="btn btn-primary" onClick={validateUser}>Login</button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
