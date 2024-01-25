@@ -3,7 +3,7 @@ import Bidpage from '../layout/Bidpage'
 
 function Bids() {
   return (
-   <Bidpage/>
+   <Bidpage type={"bid"}/>
   )
 }
 

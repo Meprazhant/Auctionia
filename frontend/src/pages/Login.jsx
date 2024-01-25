@@ -15,6 +15,10 @@ function Login() {
   useEffect(() => {
     if(user) {
       window.location.href = "/";
+      if(localStorage.getItem('redirect')) {
+        window.location.href = localStorage.getItem('redirect');
+        localStorage.removeItem('redirect');
+      }
     }
   }, [user])
 

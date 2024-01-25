@@ -2,7 +2,7 @@ import React from 'react'
 import BidSearch from './BideSearch'
 import CurrentBids from './CurrentBids'
 
-function Bidpage() {
+function Bidpage({type}) {
   return (
    <div className="flex flex-col">
    <div className="flex h-96 w-full" style={{
