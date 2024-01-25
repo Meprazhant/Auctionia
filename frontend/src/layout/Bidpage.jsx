@@ -2,7 +2,20 @@ import React from 'react'
 import BidSearch from './BideSearch'
 import CurrentBids from './CurrentBids'
 
-function Bidpage({type}) {
+function Bidpage({}) {
+            const [bids, setBids] = React.useState([])
+     function getBids(){
+          fetch('http://localhost:5500/api/bids/')
+          .then(response => response.json())  
+          .then(data => {
+            setBids(data)
+          });
+        }
+      
+        useEffect(() => {
+          getBids()
+        }
+        , [])
   return (
    <div className="flex flex-col">
    <div className="flex h-96 w-full" style={{
@@ -13,7 +26,7 @@ function Bidpage({type}) {
    }}>
         <BidSearch/>
    </div>
-   <CurrentBids/>
+   <CurrentBids bids={bids}/>
    </div>
   )
 }
