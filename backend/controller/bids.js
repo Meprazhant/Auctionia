@@ -13,11 +13,25 @@ export const addBid = async (req, res) => {
     }
 };
 
-// Get all bids
+// Get all approved bids
 export const getAllBids = async (req, res) => {
     try {
         const bidData = await bids.find();
-        res.json(bidData);
+        // check if approved or not
+        const approvedBids = bidData.filter(b => b.approved === true);
+        res.json(approvedBids);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Get all unapproved bids
+export const getAllUnapprovedBids = async (req, res) => {
+    try {
+        const bidData = await bids.find();
+        // check if approved or not
+        const unapprovedBids = bidData.filter(b => b.approved === false);
+        res.json(unapprovedBids);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -97,6 +111,18 @@ export const searchBid = async (req, res) => {
     try {
         const bidsData = await bids.find({ name: { $regex: req.params.query, $options: 'i' } });
         res.json(bidsData);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+}
+
+// approve auction
+export const approveBid = async (req, res) => {
+    try {
+        const bid = await bids.findById(req.params.id);
+        bid.approved = true;
+        await bid.save();
+        res.json(bid);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

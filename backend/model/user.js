@@ -22,7 +22,12 @@ const newUser = new mongoose.Schema({
     },
     file:{
         type:String
-    }
+    },
+    type:{
+        type:String,
+        default:"user"
+    },
+
     
 })
 

@@ -26,6 +26,10 @@ const Bids = new mongoose.Schema({
         type:String,
         required:true
     },
+    approved:{
+        type:Boolean,
+        default:false
+    },
    totalBids:[
         {
             user:{

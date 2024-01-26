@@ -13,6 +13,7 @@ import Bidpage from './pages/Bidpage';
 import CreateBid from './pages/CreateBid';
 import EditBid from './pages/EditBid';
 import Search from './pages/Search';
+import Admin from './pages/Admin';
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
         <Route path="/create" element={<CreateBid/>} />
         <Route path="/edit/:id" element={<EditBid/>} />
         <Route path="/search/:query" element={<Search/>} />
+        <Route path="/admin" element={<Admin/>} />
       </Routes>
     </UserProvider>
     </Router>
