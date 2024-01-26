@@ -10,14 +10,26 @@ function Bidpage() {
   const [bidPrice, setBidPrice] = React.useState(0);
   const { user } = useUser();
   const [bid, setBid] = React.useState({});
+  const [notApproved, setNotApproved] = React.useState(false);
   function fetchBid() {
     fetch("http://localhost:5500/api/bids/" + id)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        setLoading(false);
-        setBid(data);
-
+        // check if bid was approved
+        if (data.approved === false) {
+          if(data.userID?._id !== user?._id){
+            alert("Bid not approved yet")
+            router('/')
+          }else{
+            setNotApproved(true);
+            setLoading(false);
+            setBid(data);
+          }
+        }else{
+          console.log(data);
+          setLoading(false);
+          setBid(data);
+        }
       });
   }
 
@@ -152,9 +164,12 @@ console.log(res)
           ></div>
         </div>
       ) : (
-        <div className="hero min-h-screen bg-base-200">
+        <div className="relative hero min-h-screen bg-base-200">
           <div className="hero-content h-full flex-col lg:flex-row">
             <div className="flex justify-center items-center md:w-1/3 w-full">
+           {(notApproved) && <div className="absolute top-0 left-0 flex p-3 bg-red-800 text-white w-full rounded-md">
+                The Auction is not approved yet. Please wait for the admin to approve the auction so that other user can see.
+            </div>}
               <img
                 src={bid?.image}
                 className="h-full object-cover rounded-lg shadow-2xl"

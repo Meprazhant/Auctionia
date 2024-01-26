@@ -31,6 +31,7 @@ function Navbar() {
               <img src={`http://localhost:5500/upload/${user.file}`} className='h-8 w-8 rounded-full object-cover' alt="" />
               <li><Link to={"/profile"}>{user.name}</Link></li>
             </div>
+            {(user.type === 'admin') && <li><Link to={"/admin"}>Admin</Link></li>}
             <li><Link to={"/"} onClick={logout}>Logout</Link></li>
           </ul>
           }
@@ -44,6 +45,10 @@ function Navbar() {
     </div> 
     <div className="drawer-side z-50">
       <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay"></label> 
+      <ul className="flex  gap-7">
+            <li><Link to={"/bids"}>Market</Link></li>
+           {(!!user) && <li><Link to={"/create"}>Create</Link></li>}
+          </ul>
      {(!user) && <ul className="menu p-4 w-80 min-h-full bg-base-200">
         <li><Link to={"/login"}>Login</Link></li>
         <li><Link to={"/register"}>Sign Up</Link></li>
