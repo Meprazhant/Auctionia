@@ -28,15 +28,22 @@ const Bids = new mongoose.Schema({
     },
    totalBids:[
         {
-            userID:{
-                type:mongoose.Schema.Types.ObjectId,
-                ref:'User'
+            user:{
+                type:Array,
             },
             bidPrice:{
                 type:Number,
+            },
+            time:{
+                type:Date,
+                default:Date.now
             }
         }
-   ]
+   ],
+    views:{
+        type:Number,
+        default:0
+    },
 },
     {
         timestamps:{

@@ -9,6 +9,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { UserProvider } from './UserContext';
 import Bids from './pages/Bids';
+import Bidpage from './pages/Bidpage';
+import CreateBid from './pages/CreateBid';
+import EditBid from './pages/EditBid';
+import Search from './pages/Search';
 
 function App() {
 
@@ -24,7 +28,10 @@ function App() {
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
         <Route path="/bids" element={<Bids/>} />
-
+        <Route path="/b/:id" element={<Bidpage/>} />
+        <Route path="/create" element={<CreateBid/>} />
+        <Route path="/edit/:id" element={<EditBid/>} />
+        <Route path="/search/:query" element={<Search/>} />
       </Routes>
     </UserProvider>
     </Router>
