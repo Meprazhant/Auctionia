@@ -6,7 +6,7 @@ function Bidpage() {
   // get id params
   const { id } = useParams();
   const [loading, setLoading] = React.useState(true);
-  const router = useNavigate()
+  const router = useNavigate();
   const [bidPrice, setBidPrice] = React.useState(0);
   const { user } = useUser();
   const [bid, setBid] = React.useState({});
@@ -17,15 +17,15 @@ function Bidpage() {
       .then((data) => {
         // check if bid was approved
         if (data.approved === false) {
-          if(data.userID?._id !== user?._id){
-            alert("Bid not approved yet")
-            router('/')
-          }else{
+          if (data.userID?._id !== user?._id) {
+            alert("Bid not approved yet");
+            router("/");
+          } else {
             setNotApproved(true);
             setLoading(false);
             setBid(data);
           }
-        }else{
+        } else {
           console.log(data);
           setLoading(false);
           setBid(data);
@@ -78,81 +78,82 @@ function Bidpage() {
     } ${year} at ${hour}:${min} ${ampm}`;
   }
 
-  function getIncrement(){
-    const bidPrice = bid?.bidPrice
-    let newPrice = 10/100 * bidPrice
-    return newPrice
+  function getIncrement() {
+    const bidPrice = bid?.bidPrice;
+    let newPrice = (10 / 100) * bidPrice;
+    return newPrice;
   }
 
-  function bidNow(){
+  function bidNow() {
     // check if user is logged in
-    if(!user) return (
-        localStorage.setItem('redirect', '/b/'+bid._id),
-        router('/login')
-        )
+    if (!user)
+      return (
+        localStorage.setItem("redirect", "/b/" + bid._id), router("/login")
+      );
     // check if bidPrice is greater than current bidPrice
-    if(bidPrice <= bid?.bidPrice) return alert('Bid price must be greater than current bid price')
+    if (bidPrice <= bid?.bidPrice)
+      return alert("Bid price must be greater than current bid price");
     // check if bidPrice is greater than original price
-    if(bidPrice <= bid?.price) return alert('Bid price must be greater than original price')
+    if (bidPrice <= bid?.price)
+      return alert("Bid price must be greater than original price");
 
     // check if user has already bidded
-   
+
     // post bid
-const res = {
-    bidPrice: bidPrice,
-    user: user._id
-}
-console.log(res)
-        fetch('http://localhost:5500/api/makebid/'+bid._id, {
-            method: 'POST',
-            headers:{
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(res)
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            fetchBid()
-        })
+    const res = {
+      bidPrice: bidPrice,
+      user: user._id,
+    };
+    console.log(res);
+    fetch("http://localhost:5500/api/makebid/" + bid._id, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(res),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        fetchBid();
+      });
   }
-  const [alreadyBid, setAlreadyBid] = React.useState("")
+  const [alreadyBid, setAlreadyBid] = React.useState("");
 
-
-  function checkifAlreadyBidded(){
-    if(!user) return
-    if(!bid?.totalBids) return
-    const userBids = bid?.totalBids.filter((bid) => bid.user[0]._id === user._id)
-    if(userBids.length > 0){
-        setAlreadyBid(userBids[0])
-        setEditBid(false)
-    } else{
-        setAlreadyBid("")
-        setEditBid(true)
+  function checkifAlreadyBidded() {
+    if (!user) return;
+    if (!bid?.totalBids) return;
+    const userBids = bid?.totalBids.filter(
+      (bid) => bid.user[0]._id === user._id
+    );
+    if (userBids.length > 0) {
+      setAlreadyBid(userBids[0]);
+      setEditBid(false);
+    } else {
+      setAlreadyBid("");
+      setEditBid(true);
     }
   }
 
-  function deleteBid(){
-    fetch('http://localhost:5500/api/bids/'+bid._id, {
-        method: 'DELETE',
-        headers:{
-            'Content-Type': 'application/json',
-        }
+  function deleteBid() {
+    fetch("http://localhost:5500/api/bids/" + bid._id, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
-    .then(response => response.json())
-    .then(data => {
-        alert("Bid Deleted")
-        router('/')
-    })
+      .then((response) => response.json())
+      .then((data) => {
+        alert("Bid Deleted");
+        router("/");
+      });
   }
 
   useEffect(() => {
-    checkifAlreadyBidded()
-  }
-    , [bid])
+    checkifAlreadyBidded();
+  }, [bid]);
 
-    const [editBid, setEditBid] = React.useState(false)
-
+  const [editBid, setEditBid] = React.useState(false);
 
   return (
     <div className="flex min-h-screen">
@@ -167,9 +168,12 @@ console.log(res)
         <div className="relative hero min-h-screen bg-base-200">
           <div className="hero-content h-full flex-col lg:flex-row">
             <div className="flex justify-center items-center md:w-1/3 w-full">
-           {(notApproved) && <div className="absolute top-0 left-0 flex p-3 bg-red-800 text-white w-full rounded-md">
-                The Auction is not approved yet. Please wait for the admin to approve the auction so that other user can see.
-            </div>}
+              {notApproved && (
+                <div className="absolute top-0 left-0 flex p-3 bg-red-800 text-white w-full rounded-md">
+                  The Auction is not approved yet. Please wait for the admin to
+                  approve the auction so that other user can see.
+                </div>
+              )}
               <img
                 src={bid?.image}
                 className="h-full object-cover rounded-lg shadow-2xl"
@@ -181,43 +185,76 @@ console.log(res)
 
               <div className="flex flex-col pb-10 gap-5">
                 <div className="hover:bg-[#ffffff1a] cursor-pointer flex p-2 gap-3 bg-[#ffffff3a] rounded-full">
-                    <img className="h-6  w-6 rounded-full object-cover" src={`http://localhost:5500/upload/`+bid.userID?.file} alt="" />
-                    <h2 >
-                        {bid?.userID?.name}
-                    </h2>
+                  <img
+                    className="h-6  w-6 rounded-full object-cover"
+                    src={`http://localhost:5500/upload/` + bid.userID?.file}
+                    alt=""
+                  />
+                  <h2>{bid?.userID?.name}</h2>
                 </div>
 
-                {(!!alreadyBid && !editBid) && <div className=" cursor-pointer flex p-2 gap-3 bg-[#ff3b3b3a]">
-                            <div className="flex flex-col items-start gap-3">
-                            You have already bidded NPR. {alreadyBid?.bidPrice} on {formatDate(alreadyBid?.time)}
-                            <button className="btn btn-primary ml-2" onClick={()=>setEditBid(true)}>Update</button>
-                            </div>
+                {!!alreadyBid && !editBid && (
+                  <div className=" cursor-pointer flex p-2 gap-3 bg-[#ff3b3b3a]">
+                    <div className="flex flex-col items-start gap-3">
+                      You have already bidded NPR. {alreadyBid?.bidPrice} on{" "}
+                      {formatDate(alreadyBid?.time)}
+                      <button
+                        className="btn btn-primary ml-2"
+                        onClick={() => setEditBid(true)}
+                      >
+                        Update
+                      </button>
                     </div>
-                    }
+                  </div>
+                )}
 
-
-                {(user) && user._id === bid.userID?._id ? (
+                {user && user._id === bid.userID?._id ? (
                   <div className="flex gap-3">
-                    <button className="btn btn-primary ml-2" onClick={()=>{
-                        router('/edit/'+bid._id)  
-                    }}>Edit</button>
-                    <button className="btn btn-warning ml-2" onClick={deleteBid}>Delete</button>
+                    <button
+                      className="btn btn-primary ml-2"
+                      onClick={() => {
+                        router("/edit/" + bid._id);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-warning ml-2"
+                      onClick={deleteBid}
+                    >
+                      Delete
+                    </button>
                   </div>
                 ) : (
-                    <>
-                  {(editBid) &&<div className="flex gap-5">
-                    <select className="rounded-md" onChange={(e)=>{
-                        setBidPrice(e.target.value)
-                    }}>
-                        <option value={bid?.bidPrice}>NPR. {bid?.bidPrice}</option>
-                       {/* map 10 values with multiplying */}
-                          {Array(10).fill().map((_, i) => (
-                            <option value={bid?.bidPrice + getIncrement() * (i+1)}>NPR. {bid?.bidPrice + getIncrement() * (i+1)}</option>
-                          ))}   
-                    </select>
-                    <button className="btn btn-primary" onClick={bidNow}>Bid Now</button>
-                  </div>}
-                    </>
+                  <>
+                    {editBid && (
+                      <div className="flex gap-5">
+                        <select
+                          className="rounded-md"
+                          onChange={(e) => {
+                            setBidPrice(e.target.value);
+                          }}
+                        >
+                          <option value={bid?.bidPrice}>
+                            NPR. {bid?.bidPrice}
+                          </option>
+                          {/* map 10 values with multiplying */}
+                          {Array(10)
+                            .fill()
+                            .map((_, i) => (
+                              <option
+                                value={bid?.bidPrice + getIncrement() * (i + 1)}
+                              >
+                                NPR. {bid?.bidPrice + getIncrement() * (i + 1)}
+                              </option>
+                            ))}
+                        </select>
+                        <button className="btn btn-primary" onClick={bidNow}>
+                          Bid Now
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div className="overflow-x-auto">
@@ -240,16 +277,20 @@ console.log(res)
                     </tr>
                     <tr>
                       <td>Total Bids</td>
-                      <td>{bid?.totalBids.length}</td>
+                      <td>{bid?.totalBids?.length}</td>
                     </tr>
                     <tr>
                       <td>Total Views</td>
                       <td>{bid?.views}</td>
                     </tr>
+                    <tr>
+                      <td>Category</td>
+                      <td>{bid?.category}</td>
+                    </tr>
                   </tbody>
                 </table>
 
-                {bid?.totalBids.length > 0 && (
+                {bid?.totalBids?.length > 0 && (
                   <>
                     <h2 className="text-2xl font-bold mt-2">Bid History</h2>
                     <table className="table">

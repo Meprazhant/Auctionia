@@ -15,13 +15,19 @@ function Admin() {
     }
 
     useEffect(() => {
-        fetch('http://localhost:5500/api/bids/unapproved')
-        .then(res => res.json())
-        .then(data => 
-            setAuctions(data)
-            )
+       reload()
     }
     , [])
+
+    function deleteAuction(id) {
+        fetch('http://localhost:5500/api/bids/' + id, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            reload()
+        })
+    }
 
     if(!user) return null
 
@@ -56,7 +62,7 @@ function Admin() {
                 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  w-full
             ">
                 {
-                    auctions.map(auction => <AdminCard key={auction._id} auction={auction} reload={reload} />)
+                    auctions.map(auction => <AdminCard key={auction._id} auction={auction}  reload={reload} />)
                 }
             </div>
         </div>

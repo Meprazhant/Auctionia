@@ -14,7 +14,19 @@ function EditBid() {
     price: "",
     bidPrice: "",
     userID: user._id,
+    category: "",
   });
+
+  const artCategories = [
+    "Painting",
+    "Photography",
+    "Digital Art",
+    "Sculpture",
+    "Graphic Design",
+    "Street Art",
+    "Illustration",
+    "Mixed Media",
+  ];
 
   // check if user is the owner of the bid
   // if not then redirect to home page
@@ -50,9 +62,10 @@ function EditBid() {
       !!data.description &&
       !!data.image &&
       !!data.price &&
-      !!data.bidPrice
+      !!data.bidPrice &&
+      !!data.category
     ) {
-      fetch("http://localhost:5500/api/bids/" + id , {
+      fetch("http://localhost:5500/api/bids/" + id, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -87,8 +100,7 @@ function EditBid() {
     <div
       className="hero min-h-screen justify-end bg-base-200 p-10"
       style={{
-        backgroundImage:
-          `url(${data.image})`,
+        backgroundImage: `url(${data.image})`,
       }}
     >
       <div
@@ -144,12 +156,13 @@ function EditBid() {
               className="input input-bordered"
             />
           </div>
-          {(!!data.image) && <div className="flex">
-            <img src={data.image} className='h-30 object-contain' alt="" />
-        </div>}
+          {!!data.image && (
+            <div className="flex">
+              <img src={data.image} className="h-30 object-contain" alt="" />
+            </div>
+          )}
           <div className="form-control">
             <label className="label">
-
               <span className="label-text">Price</span>
             </label>
             <input
@@ -177,6 +190,25 @@ function EditBid() {
               }}
               className="input input-bordered"
             />
+          </div>
+
+          <div className="form-control">
+            <label className="label">
+              <span className="label-text">Category</span>
+            </label>
+            <select
+              name="category"
+              value={data?.category}
+              onChange={(e) => {
+                handleChange(e.target.name, e.target.value);
+              }}
+              className="input input-bordered"
+            >
+              <option value="">Select Category</option>
+              {artCategories.map((category) => (
+                <option value={category}>{category}</option>
+              ))}
+            </select>
           </div>
 
           <button className="btn btn-primary mt-5" onClick={submit}>
